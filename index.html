@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hidden Bite – Вход через Telegram</title>
+  <script async src="https://telegram.org/js/telegram-widget.js?22"
+          data-telegram-login="hidden_bite_bot"
+          data-size="large"
+          data-userpic="true"
+          data-request-access="write"
+          data-userpic="true"
+          data-lang="ru"
+          data-onauth="onTelegramAuth(user)">
+  </script>
+  <script>
+    function onTelegramAuth(user) {
+      // Здесь вы решаете, что делать с пользователем.
+      // Пока просто выводим в консоль:
+      console.log('Telegram user:', user);
+
+      // Вариант 1: редирект обратно в ваше приложение по схеме deep link
+      // location.href = 'hidden_bite://auth?id=' + user.id +
+      //   '&first_name=' + encodeURIComponent(user.first_name || '') +
+      //   '&last_name=' + encodeURIComponent(user.last_name || '') +
+      //   '&username=' + encodeURIComponent(user.username || '') +
+      //   '&photo_url=' + encodeURIComponent(user.photo_url || '');
+
+      // Вариант 2: временно просто показываем сообщение
+      document.body.innerHTML =
+        '<h2>Успешный вход, ' + (user.first_name || 'пользователь') + '!</h2>';
+    }
+  </script>
+</head>
+<body>
+  <h1>Вход через Telegram для Hidden Bite</h1>
+  <p>Нажмите кнопку ниже, чтобы войти через Telegram.</p>
+</body>
+</html>
