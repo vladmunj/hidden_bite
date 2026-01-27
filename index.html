@@ -8,26 +8,26 @@
           data-size="large"
           data-userpic="true"
           data-request-access="write"
-          data-userpic="true"
           data-lang="ru"
           data-onauth="onTelegramAuth(user)">
   </script>
   <script>
     function onTelegramAuth(user) {
-      // Здесь вы решаете, что делать с пользователем.
-      // Пока просто выводим в консоль:
-      console.log('Telegram user:', user);
-
-      // Вариант 1: редирект обратно в ваше приложение по схеме deep link
-      // location.href = 'hidden_bite://auth?id=' + user.id +
-      //   '&first_name=' + encodeURIComponent(user.first_name || '') +
-      //   '&last_name=' + encodeURIComponent(user.last_name || '') +
-      //   '&username=' + encodeURIComponent(user.username || '') +
-      //   '&photo_url=' + encodeURIComponent(user.photo_url || '');
-
-      // Вариант 2: временно просто показываем сообщение
-      document.body.innerHTML =
-        '<h2>Успешный вход, ' + (user.first_name || 'пользователь') + '!</h2>';
+      if (window.TelegramAuth && window.TelegramAuth.postMessage) {
+        window.TelegramAuth.postMessage(JSON.stringify({
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          username: user.username,
+          photo_url: user.photo_url,
+          auth_date: user.auth_date,
+          hash: user.hash
+        }));
+      } else {
+        document.body.innerHTML =
+          '<h2>Успешный вход, ' + (user.first_name || 'пользователь') + '!</h2>';
+        console.log('Telegram user:', user);
+      }
     }
   </script>
 </head>
