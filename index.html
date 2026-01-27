@@ -2,23 +2,98 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Hidden Bite – Вход через Telegram</title>
+  <title>Hidden Bite – Telegram Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-gradient: radial-gradient(circle at top, #1f2937 0, #020617 60%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Roboto", sans-serif;
+      background: var(--bg-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08), transparent 55%),
+        radial-gradient(circle at 80% 0%, rgba(239, 68, 68, 0.12), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.9;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      padding: 24px 28px;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow:
+        0 20px 45px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(22px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 260px;
+    }
+
+    /* Прячем всё, кроме самой кнопки виджета */
+    .card > :not(script):not(.tgme_widget_login_button) {
+      display: none !important;
+    }
+
+    .tgme_widget_login_button {
+      transform: translateZ(0);
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px 22px;
+        border-radius: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Вход через Telegram для Hidden Bite</h1>
-  <p>Нажмите кнопку ниже, чтобы войти через Telegram.</p>
+  <div class="overlay"></div>
 
-  <script async src="https://telegram.org/js/telegram-widget.js?22"
-          data-telegram-login="hidden_bite_bot"
-          data-size="large"
-          data-userpic="true"
-          data-request-access="write"
-          data-lang="ru"
-          data-onauth="onTelegramAuth(user)">
-  </script>
+  <div class="card">
+    <!-- Здесь ТОЛЬКО кнопка Telegram Login Widget -->
+    <script async
+            src="https://telegram.org/js/telegram-widget.js?22"
+            data-telegram-login="hidden_bite_bot"
+            data-size="large"
+            data-userpic="true"
+            data-request-access="write"
+            data-lang="ru"
+            data-onauth="onTelegramAuth(user)">
+    </script>
+  </div>
 
   <script>
     function onTelegramAuth(user) {
+      // Отправляем данные обратно во Flutter (WebView)
       if (window.TelegramAuth && window.TelegramAuth.postMessage) {
         window.TelegramAuth.postMessage(JSON.stringify({
           id: user.id,
@@ -30,8 +105,7 @@
           hash: user.hash
         }));
       } else {
-        document.body.innerHTML =
-          '<h2>Успешный вход, ' + (user.first_name || 'пользователь') + '!</h2>';
+        // Фолбэк — если открыли в обычном браузере
         console.log('Telegram user:', user);
       }
     }
