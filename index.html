@@ -5,31 +5,22 @@
   <title>Hidden Bite – Telegram Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root {
-      --bg: #0f172a;
-      --bg-gradient: radial-gradient(circle at top, #1f2937 0, #020617 60%);
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     html, body {
       height: 100%;
     }
-
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
         "Roboto", sans-serif;
-      background: var(--bg-gradient);
+      background: radial-gradient(circle at top, #1f2937 0, #020617 60%);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #e5e7eb;
     }
-
     .overlay {
       position: fixed;
       inset: 0;
@@ -40,7 +31,6 @@
       mix-blend-mode: screen;
       opacity: 0.9;
     }
-
     .card {
       position: relative;
       z-index: 1;
@@ -52,26 +42,10 @@
         0 20px 45px rgba(15, 23, 42, 0.9),
         0 0 0 1px rgba(15, 23, 42, 0.8);
       backdrop-filter: blur(22px);
+      min-width: 260px;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 260px;
-    }
-
-    /* Прячем всё, кроме самой кнопки виджета */
-    .card > :not(script):not(.tgme_widget_login_button) {
-      display: none !important;
-    }
-
-    .tgme_widget_login_button {
-      transform: translateZ(0);
-    }
-
-    @media (max-width: 480px) {
-      .card {
-        padding: 20px 22px;
-        border-radius: 16px;
-      }
     }
   </style>
 </head>
@@ -79,7 +53,6 @@
   <div class="overlay"></div>
 
   <div class="card">
-    <!-- Здесь ТОЛЬКО кнопка Telegram Login Widget -->
     <script async
             src="https://telegram.org/js/telegram-widget.js?22"
             data-telegram-login="hidden_bite_bot"
@@ -93,7 +66,6 @@
 
   <script>
     function onTelegramAuth(user) {
-      // Отправляем данные обратно во Flutter (WebView)
       if (window.TelegramAuth && window.TelegramAuth.postMessage) {
         window.TelegramAuth.postMessage(JSON.stringify({
           id: user.id,
@@ -105,7 +77,6 @@
           hash: user.hash
         }));
       } else {
-        // Фолбэк — если открыли в обычном браузере
         console.log('Telegram user:', user);
       }
     }
